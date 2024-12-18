@@ -3,19 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brick Breaker Game</title>
+    <title>Breakout Game</title>
     <style>
         canvas {
+            background-color: #eee;
             display: block;
             margin: 0 auto;
-            background: #eee;
-            border: 1px solid #000;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 5px;
+            background-color: #0095DD;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <canvas id="myCanvas" width="480" height="320"></canvas>
-    <script src="game.js"></script>
-    <a href="about.html"><button>이전으로</button></a>
+
+<canvas id="myCanvas" width="480" height="320"></canvas>
+<div class="button-container">
+    <button class="button" id="leftBtn"><</button>
+    <button class="button" id="rightBtn">></button>
+</div>
+
+<script src="game.js"></script>
+<a href="about.html"><button>이전으로</button></a>
 </body>
 </html>
+

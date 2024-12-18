@@ -32,6 +32,17 @@ for (let c = 0; c < brickColumnCount; c++) {
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
+// 모바일 버튼 이벤트 리스너 추가
+document.getElementById("leftBtn").addEventListener("click", () => {
+    leftPressed = true;
+    rightPressed = false;
+});
+
+document.getElementById("rightBtn").addEventListener("click", () => {
+    rightPressed = true;
+    leftPressed = false;
+});
+
 function keyDownHandler(e) {
     if (e.key === "Right" || e.key === "ArrowRight") {
         rightPressed = true;
@@ -162,3 +173,4 @@ function draw() {
 }
 
 draw();
+
