@@ -21,6 +21,18 @@ let brickOffsetLeft = 30;
 let score = 0;
 let lives = 3;
 
+const BRICK_WIDTH = brickWidth;
+const BRICK_HEIGHT = brickHeight;
+const BRICK_PADDING = brickPadding;
+const BRICK_OFFSET_TOP = brickOffsetTop;
+const BRICK_OFFSET_LEFT = brickOffsetLeft;
+const PADDLE_HEIGHT = paddleHeight;
+const PADDLE_WIDTH = paddleWidth;
+const BALL_RADIUS = ballRadius;
+const CANVAS_WIDTH = canvas.width;
+const CANVAS_HEIGHT = canvas.height;
+const PADDLE_SPEED = 7; // 이동 속도 7픽셀
+
 const bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
     bricks[c] = [];
@@ -33,14 +45,37 @@ document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
 // 모바일 버튼 이벤트 리스너 추가
-document.getElementById("leftBtn").addEventListener("click", () => {
+let moveInterval;
+document.getElementById("leftBtn").addEventListener("mousedown", () => {
     leftPressed = true;
-    rightPressed = false;
+    if (!moveInterval) {
+        moveInterval = setInterval(() => {
+            if (leftPressed && paddleX > 0) {
+                paddleX -= PADDLE_SPEED;
+            }
+        }, 100); // 100ms 간격으로 패들 이동
+    }
+});
+document.getElementById("leftBtn").addEventListener("mouseup", () => {
+    leftPressed = false;
+    clearInterval(moveInterval); // 이동 멈추기
+    moveInterval = null;
 });
 
-document.getElementById("rightBtn").addEventListener("click", () => {
+document.getElementById("rightBtn").addEventListener("mousedown", () => {
     rightPressed = true;
-    leftPressed = false;
+    if (!moveInterval) {
+        moveInterval = setInterval(() => {
+            if (rightPressed && paddleX < canvas.width - paddleWidth) {
+                paddleX += PADDLE_SPEED;
+            }
+        }, 100); // 100ms 간격으로 패들 이동
+    }
+});
+document.getElementById("rightBtn").addEventListener("mouseup", () => {
+    rightPressed = false;
+    clearInterval(moveInterval); // 이동 멈추기
+    moveInterval = null;
 });
 
 function keyDownHandler(e) {
@@ -161,10 +196,11 @@ function draw() {
         }
     }
 
+    // 키보드 입력으로 패들 이동
     if (rightPressed && paddleX < canvas.width - paddleWidth) {
-        paddleX += 7;
+        paddleX += PADDLE_SPEED;
     } else if (leftPressed && paddleX > 0) {
-        paddleX -= 7;
+        paddleX -= PADDLE_SPEED;
     }
 
     x += dx;
@@ -173,4 +209,5 @@ function draw() {
 }
 
 draw();
+
 
