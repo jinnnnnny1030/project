@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>베지어 곡선</title>
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+            <meta name="description" content="" />
+            <meta name="author" content="" />
+            <title>내 블로그 - 조혜진</title>
+            <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+            <!-- Font Awesome icons (free version)-->
+            <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+            <!-- Google fonts-->
+            <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+            <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+            <!-- Core theme CSS (includes Bootstrap)-->
+            <link href="css/styles.css" rel="stylesheet" />
+            <style>
+                .box {
+                    width: 100px;
+                    height: 100px;
+                    background-color: red;
+                    position: relative;
+                    animation: move 2s infinite;
+                }
+    
+                @keyframes move {
+                    0% { left: 0; }
+                    50% { left: 500px; }
+                    100% { left: 0; }
+                }
+    
+                .slider-container {
+                    margin: 20px 0;
+                }
+    
+                .slider {
+                    width: 200px;
+                }
+            </style>
+        </head>
+        <body>
+            <!-- Navigation-->
+            <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+                <div class="container px-4 px-lg-5">
+                    <a class="navbar-brand" href="index.html">조혜진</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                        Menu
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarResponsive">
+                        <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">About</a></li>
+                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="post.html">Post</a></li>
+                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+    
+            <!-- Page Header-->
+            <header class="masthead" style="background-image: url('assets/img/about-bg.jpg')">
+                <div class="container position-relative px-4 px-lg-5">
+                    <div class="row gx-4 gx-lg-5 justify-content-center">
+                        <div class="col-md-10 col-lg-8 col-xl-7">
+                            <div class="page-heading">
+                                <h1>베지어 곡선에</h1>
+                                <h1>따라 움직이는 사각형</h1>
+                                <span class="subheading">베지어 함수에 변화에 따라 달라지는 사각형의 움직임을 확인하세요.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+    
+            <!-- Main Content-->
+            <main class="mb-4">
+                <div class="container px-4 px-lg-5">
+                    <div class="row gx-4 gx-lg-5 justify-content-center">
+                        <div class="col-md-10 col-lg-8 col-xl-7">
+                            <!-- 움직이는 사각형 -->
+                            <div class="box"></div>
+    
+                            <!-- 슬라이더 컨트롤 -->
+                            <div class="slider-container">
+                                <label for="p1">P1 x: </label>
+                                <input type="range" id="p1" class="slider" min="0" max="1" step="0.01" value="0.25">
+                                <span id="p1-value">0.25</span>
+                                <br>
+                                <label for="p2">P1 y: </label>
+                                <input type="range" id="p2" class="slider" min="0" max="1" step="0.01" value="0.1">
+                                <span id="p2-value">0.1</span>
+                                <br>
+                                <label for="p3">P2 x: </label>
+                                <input type="range" id="p3" class="slider" min="0" max="1" step="0.01" value="0.25">
+                                <span id="p3-value">0.25</span>
+                                <br>
+                                <label for="p4">P2 y: </label>
+                                <input type="range" id="p4" class="slider" min="0" max="1" step="0.01" value="1">
+                                <span id="p4-value">1</span>
+                            </div>
+    
+                            <!-- 스크립트 -->
+                            <script>
+                                const box = document.querySelector('.box');
+                                const p1Slider = document.getElementById('p1');
+                                const p2Slider = document.getElementById('p2');
+                                const p3Slider = document.getElementById('p3');
+                                const p4Slider = document.getElementById('p4');
+    
+                                const p1Value = document.getElementById('p1-value');
+                                const p2Value = document.getElementById('p2-value');
+                                const p3Value = document.getElementById('p3-value');
+                                const p4Value = document.getElementById('p4-value');
+    
+                                function updateAnimation() {
+                                    const p1 = parseFloat(p1Slider.value);
+                                    const p2 = parseFloat(p2Slider.value);
+                                    const p3 = parseFloat(p3Slider.value);
+                                    const p4 = parseFloat(p4Slider.value);
+    
+                                    p1Value.textContent = p1;
+                                    p2Value.textContent = p2;
+                                    p3Value.textContent = p3;
+                                    p4Value.textContent = p4;
+    
+                                    box.style.animationTimingFunction = `cubic-bezier(${p1}, ${p2}, ${p3}, ${p4})`;
+                                }
+    
+                                p1Slider.addEventListener('input', updateAnimation);
+                                p2Slider.addEventListener('input', updateAnimation);
+                                p3Slider.addEventListener('input', updateAnimation);
+                                p4Slider.addEventListener('input', updateAnimation);
+    
+                                updateAnimation();
+                            </script>
+    
+                            <!-- 처음으로 가기 버튼 -->
+                            <a href="bezier1.html"><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                                첫번째 페이지로 가기
+                            </button></a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+    
+            <!-- Footer-->
+            <footer class="border-top">
+                <div class="container px-4 px-lg-5">
+                    <div class="row gx-4 gx-lg-5 justify-content-center">
+                        <div class="col-md-10 col-lg-8 col-xl-7">
+                            <ul class="list-inline text-center">
+                            </ul>
+                            <div class="small text-center text-muted fst-italic">Copyright &copy; 조혜진</div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+    
+            <!-- Bootstrap core JS-->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+            <!-- Core theme JS-->
+            <script src="js/scripts.js"></script>
+        </body>
+    </html>
+    
+</html>
+
+
+
+
+
+
+

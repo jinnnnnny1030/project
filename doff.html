@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>내 블로그 - 조혜진</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet" />
+    
+    <!-- 스타일 정의 -->
+    <style>
+        canvas {
+            border: 1px solid black;
+            background-color: #fff;
+        }
+        /* 버튼들이 캔버스 아래에 위치하도록 설정 */
+        .buttons-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #startButton, #stopButton {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="index.html">조혜진</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="post.html">Post</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header-->
+    <header class="masthead" style="background-image: url('assets/img/about-bg.jpg')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="page-heading">
+                        <h1>About Me</h1>
+                        <span class="subheading">도플러효과 시뮬레이션</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="mb-4">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <!-- 캔버스 요소 추가 -->
+                     <canvas id="simulationCanvas" width="600" height="400"></canvas>
+                        <!-- 버튼들을 담은 컨테이너 -->
+                        <div class="buttons-container">
+                            <button id="startButton">시작</button>
+                            <button id="stopButton">정지</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    <!-- Footer-->
+    <footer class="border-top">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <ul class="list-inline text-center">
+                    </ul>
+                    <div class="small text-center text-muted fst-italic">Copyright &copy; 조혜진</div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+
+    <!-- 도플러 효과 시뮬레이션 JS -->
+    <script>
+        const canvas = document.getElementById('simulationCanvas');
+        const ctx = canvas.getContext('2d');  // 2D 그래픽 컨텍스트 얻기
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        let position = -30; // 시작 위치 (화면 바깥)
+        let animationId; // 애니메이션 ID
+        let soundSource; // 소리 소스
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        function createSound() {
+            if (soundSource) {
+                soundSource.stop(); // 이전 소리 중지
+            }
+            soundSource = audioContext.createOscillator();
+            soundSource.type = 'sine';
+            soundSource.frequency.setValueAtTime(440, audioContext.currentTime); // 기본 주파수
+            soundSource.connect(audioContext.destination);
+            soundSource.start();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 초기화 (이전 프레임 지우기)
+
+            position += 2; // 이동 속도
+
+            if (position > canvas.width) {
+                soundSource.stop(); // 소리 멈춤
+                cancelAnimationFrame(animationId); // 애니메이션 종료
+                return; // 애니메이션 종료
+            }
+
+            // 도플러 효과 적용
+            const frequency = 440 + (position > (canvas.width / 2) ? -50 : 50); // 피치 변화
+            soundSource.frequency.setValueAtTime(frequency, audioContext.currentTime);
+
+            // 빨간 고정 객체 그리기
+            ctx.fillStyle = 'red';
+            ctx.fillRect(canvas.width / 2 - 25, canvas.height / 2 - 25, 50, 50); // 고정된 빨간 사각형
+
+            // 파란 이동 객체 그리기
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(position, canvas.height / 2 - 15, 30, 30); // 이동하는 파란 사각형
+
+            animationId = requestAnimationFrame(animate); // 애니메이션 호출
+        }
+
+        startButton.addEventListener('click', () => {
+            position = -30; // 시작 위치 초기화
+            createSound(); // 소리 생성
+            cancelAnimationFrame(animationId); // 이전 애니메이션 종료
+            animate(); // 애니메이션 시작
+        });
+
+        stopButton.addEventListener('click', () => {
+            soundSource.stop(); // 소리 중지
+            cancelAnimationFrame(animationId); // 애니메이션 중지
+        });
+    </script>
+
+</body>
+</html>
+
+
