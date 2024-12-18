@@ -44,9 +44,9 @@ for (let c = 0; c < brickColumnCount; c++) {
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
-// 모바일 버튼 이벤트 리스너 추가
+// 모바일 버튼 이벤트 리스너 추가 (터치 이벤트)
 let moveInterval;
-document.getElementById("leftBtn").addEventListener("mousedown", () => {
+document.getElementById("leftBtn").addEventListener("touchstart", () => {
     leftPressed = true;
     if (!moveInterval) {
         moveInterval = setInterval(() => {
@@ -56,13 +56,14 @@ document.getElementById("leftBtn").addEventListener("mousedown", () => {
         }, 100); // 100ms 간격으로 패들 이동
     }
 });
-document.getElementById("leftBtn").addEventListener("mouseup", () => {
+
+document.getElementById("leftBtn").addEventListener("touchend", () => {
     leftPressed = false;
     clearInterval(moveInterval); // 이동 멈추기
     moveInterval = null;
 });
 
-document.getElementById("rightBtn").addEventListener("mousedown", () => {
+document.getElementById("rightBtn").addEventListener("touchstart", () => {
     rightPressed = true;
     if (!moveInterval) {
         moveInterval = setInterval(() => {
@@ -72,7 +73,8 @@ document.getElementById("rightBtn").addEventListener("mousedown", () => {
         }, 100); // 100ms 간격으로 패들 이동
     }
 });
-document.getElementById("rightBtn").addEventListener("mouseup", () => {
+
+document.getElementById("rightBtn").addEventListener("touchend", () => {
     rightPressed = false;
     clearInterval(moveInterval); // 이동 멈추기
     moveInterval = null;
@@ -209,5 +211,6 @@ function draw() {
 }
 
 draw();
+
 
 
