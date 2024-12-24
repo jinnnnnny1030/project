@@ -112,7 +112,7 @@
                         <input type="text" id="title" placeholder="제목" required>
                         <textarea id="content" placeholder="내용을 입력하세요" required></textarea>
                         <input type="file" id="imageInput" accept="image/*">
-                        <button class="btn btn-primary text-uppercase disabled" type="submit">글올리기</button>
+                        <button class="btn btn-primary text-uppercase" type="button" id="submitButton" aria-expanded="false" aria-label="글 올리기">글 올리기</button>
                     </form>
                     <div id="posts"></div>
                 </div>
@@ -121,85 +121,92 @@
     </article>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const postForm = document.getElementById('postForm');
-            const titleInput = document.getElementById('title');
-            const contentInput = document.getElementById('content');
-            const imageInput = document.getElementById('imageInput');
-            const postsContainer = document.getElementById('posts');
-            function loadPosts() {
-            const posts = JSON.parse(localStorage.getItem('posts')) || [];
-            postsContainer.innerHTML = '';
-            posts.forEach((post, index) => {
-                const newPost = document.createElement('article');
-                const postTitle = document.createElement('h2');
-                const postImage = document.createElement('img');
-                const postContent = document.createElement('p');
-                const deleteButton = document.createElement('button');
+    const postForm = document.getElementById('postForm');
+    const submitButton = document.getElementById('submitButton');  // submitButton에 클릭 이벤트 추가
+    const titleInput = document.getElementById('title');
+    const contentInput = document.getElementById('content');
+    const imageInput = document.getElementById('imageInput');
+    const postsContainer = document.getElementById('posts');
+    
+    function loadPosts() {
+        const posts = JSON.parse(localStorage.getItem('posts')) || [];
+        postsContainer.innerHTML = '';
+        posts.forEach((post, index) => {
+            const newPost = document.createElement('article');
+            const postTitle = document.createElement('h2');
+            const postImage = document.createElement('img');
+            const postContent = document.createElement('p');
+            const deleteButton = document.createElement('button');
 
-                postTitle.textContent = post.title;
-                if (post.image) {
-                    postImage.src = post.image;
-                    newPost.appendChild(postImage);
-                }
-                postContent.textContent = post.content;
-                deleteButton.textContent = '삭제';
-                deleteButton.classList.add('delete');
-                deleteButton.addEventListener('click', () => {
-                    deletePost(index);
-                });
-
-                newPost.appendChild(postTitle);
-                newPost.appendChild(postImage); // Add image after title
-                newPost.appendChild(postContent);
-                newPost.appendChild(deleteButton);
-                postsContainer.appendChild(newPost);
-            });
-        }
-
-        function deletePost(index) {
-            const posts = JSON.parse(localStorage.getItem('posts')) || [];
-            posts.splice(index, 1);
-            localStorage.setItem('posts', JSON.stringify(posts));
-            loadPosts();
-        }
-
-        postForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const title = titleInput.value;
-            const content = contentInput.value;
-            const imageFile = imageInput.files[0];
-
-            const reader = new FileReader();
-            reader.onloadend = function() {
-                const posts = JSON.parse(localStorage.getItem('posts')) || [];
-                posts.push({ title, content, image: reader.result });
-                localStorage.setItem('posts', JSON.stringify(posts));
-
-                loadPosts();
-
-                titleInput.value = '';
-                contentInput.value = '';
-                imageInput.value = '';
-            };
-
-            if (imageFile) {
-                reader.readAsDataURL(imageFile);
-            } else {
-                const posts = JSON.parse(localStorage.getItem('posts')) || [];
-                posts.push({ title, content, image: null });
-                localStorage.setItem('posts', JSON.stringify(posts));
-
-                loadPosts();
-
-                titleInput.value = '';
-                contentInput.value = '';
-                imageInput.value = '';
+            postTitle.textContent = post.title;
+            if (post.image) {
+                postImage.src = post.image;
+                newPost.appendChild(postImage);
             }
-        });
+            postContent.textContent = post.content;
+            deleteButton.textContent = '삭제';
+            deleteButton.classList.add('delete');
+            deleteButton.addEventListener('click', () => {
+                deletePost(index);
+            });
 
+            newPost.appendChild(postTitle);
+            newPost.appendChild(postImage); // Add image after title
+            newPost.appendChild(postContent);
+            newPost.appendChild(deleteButton);
+            postsContainer.appendChild(newPost);
+        });
+    }
+
+    function deletePost(index) {
+        const posts = JSON.parse(localStorage.getItem('posts')) || [];
+        posts.splice(index, 1);
+        localStorage.setItem('posts', JSON.stringify(posts));
         loadPosts();
+    }
+
+    postForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const title = titleInput.value;
+        const content = contentInput.value;
+        const imageFile = imageInput.files[0];
+
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            const posts = JSON.parse(localStorage.getItem('posts')) || [];
+            posts.push({ title, content, image: reader.result });
+            localStorage.setItem('posts', JSON.stringify(posts));
+
+            loadPosts();
+
+            titleInput.value = '';
+            contentInput.value = '';
+            imageInput.value = '';
+        };
+
+        if (imageFile) {
+            reader.readAsDataURL(imageFile);
+        } else {
+            const posts = JSON.parse(localStorage.getItem('posts')) || [];
+            posts.push({ title, content, image: null });
+            localStorage.setItem('posts', JSON.stringify(posts));
+
+            loadPosts();
+
+            titleInput.value = '';
+            contentInput.value = '';
+            imageInput.value = '';
+        }
     });
+
+    // "글 올리기" 버튼 클릭 시, 폼을 강제로 제출하도록 설정
+    submitButton.addEventListener('click', function() {
+        postForm.submit(); // 폼 제출
+    });
+
+    loadPosts();
+});
 </script>
     <!-- Footer-->
     <footer class="border-top">
